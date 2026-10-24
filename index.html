@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Let's Send It</title>
+<meta name="description" content="Off-snow snowboard training for carving and jumps.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Send It">
+<meta name="theme-color" content="#edf2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a1018" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: resort signage. Home = wordmark, replayable kicker scene, a lift-ticket week pass
+   punched in piste colours, then four trail-sign day cards. Day view = trail-sign header and
+   stacked exercise rows, each with a looping drawn figure. */
+:root{
+  --bg:#edf2f7;
+  --surface:#ffffff;
+  --surface-2:#e3eaf2;
+  --fg:#0e1c2a;
+  --muted:#556779;
+  --line:#ccd7e2;
+  --accent:#e2481a;
+  --accent-ink:#ffffff;
+  --accent-soft:#fde3d8;
+  --done:#0f7a59;
+  --done-soft:#d5efe4;
+  --fig:#14222f;
+  --prop:#8fa2b3;
+  --snow:#f7fafd;
+  --kit:#e2481a;
+  --kit2:#b4350f;
+  --lens:#f5b72e;
+  --sky0:#9fc0de; --sky1:#d9e7f3; --sun:#fff4d6;
+  --mfar:#b4c7da; --mnear:#87a1bb; --cap:#f3f8fc; --vfloor:#dbe6ef; --tree:#4f7380;
+  --flake:#ffffff; --spray:#a8c0d6;
+  --pg:#2e8b45; --pb:#1b6fd0; --pr:#c92b28; --pk:#141b22;
+  --r:14px;
+  --d:'Big Shoulders Display','Barlow Condensed','Arial Narrow',sans-serif;
+  --l:'Barlow Condensed','Arial Narrow',sans-serif;
+  --b:'Barlow',"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a1018; --surface:#131c26; --surface-2:#1b2632; --fg:#e8eff5; --muted:#91a4b4;
+  --line:#26333f; --accent:#ff6b3d; --accent-ink:#1a0b05; --accent-soft:#3a170b;
+  --done:#41c793; --done-soft:#0e2d22; --fig:#dce6ee; --prop:#6a7f91;
+  --snow:#1a232d; --kit:#ff6b3d; --kit2:#c9481f; --lens:#f5b72e;
+  --sky0:#060c16; --sky1:#14233a; --sun:#d9e3f0;
+  --mfar:#18273a; --mnear:#22364b; --cap:#3e5470; --vfloor:#1b2735; --tree:#19303a;
+  --flake:#cfe0f0; --spray:#dbe8f5;
+  --pg:#43b561; --pb:#4a93ea; --pr:#ef5350; --pk:#e8eff5;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0a1018; --surface:#131c26; --surface-2:#1b2632; --fg:#e8eff5; --muted:#91a4b4;
+  --line:#26333f; --accent:#ff6b3d; --accent-ink:#1a0b05; --accent-soft:#3a170b;
+  --done:#41c793; --done-soft:#0e2d22; --fig:#dce6ee; --prop:#6a7f91;
+  --snow:#1a232d; --kit:#ff6b3d; --kit2:#c9481f; --lens:#f5b72e;
+  --sky0:#060c16; --sky1:#14233a; --sun:#d9e3f0;
+  --mfar:#18273a; --mnear:#22364b; --cap:#3e5470; --vfloor:#1b2735; --tree:#19303a;
+  --flake:#cfe0f0; --spray:#dbe8f5;
+  --pg:#43b561; --pb:#4a93ea; --pr:#ef5350; --pk:#e8eff5;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%}
+body{margin:0;overscroll-behavior-y:none}
+button,.day,.lin{-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--b);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:640px;margin:0 auto;position:relative;z-index:1;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px 64px}
+h1,h2,h3{font-family:var(--d);margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--l);font-size:12px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted)}
+.tnum{font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:none;padding:0}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+/* ---- page backdrop ---- */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bgscene{position:absolute;left:0;right:0;bottom:0;height:42%;opacity:.45;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 45%);
+  mask-image:linear-gradient(to bottom,transparent,#000 45%)}
+.bgscene svg{display:block;width:100%;height:100%}
+
+/* ---- falling snow ---- */
+.snowL{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.snowL i{position:absolute;display:block;border-radius:50%;background:var(--flake);
+  animation:fall linear infinite, drift ease-in-out infinite alternate}
+@keyframes fall{from{top:-8%}to{top:108%}}
+@keyframes drift{from{transform:translateX(-8px)}to{transform:translateX(8px)}}
+
+/* ---- opening run ---- */
+.intro{position:fixed;inset:0;z-index:60;overflow:hidden;
+  background:linear-gradient(var(--sky0),var(--sky1) 55%,var(--snow));
+  display:grid;place-items:center;transition:opacity .6s ease,transform .6s ease}
+.intro.out{opacity:0;transform:scale(1.04);pointer-events:none}
+.stage{position:absolute;inset:0}
+.stage svg{display:block;width:100%;height:100%;overflow:visible}
+.skip{position:absolute;right:max(16px,env(safe-area-inset-right,0px));
+  bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  font-family:var(--l);font-size:13px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--fg);opacity:.6;padding:10px 14px}
+.ititle{position:absolute;left:0;right:0;top:calc(9% + env(safe-area-inset-top,0px));
+  text-align:center;pointer-events:none;padding:0 16px}
+.ititle .eyebrow{display:block;color:var(--fg);opacity:0;transition:opacity .5s .5s}
+.ititle.on .eyebrow{opacity:.7}
+.iword{font-family:var(--d);font-weight:900;text-transform:uppercase;line-height:.9;
+  font-size:clamp(48px,14vw,104px);letter-spacing:.01em;color:var(--fg)}
+.iword span{display:inline-block;opacity:0;transform:translateY(.5em) skewX(-12deg)}
+.ititle.on .iword span{animation:letter .55s cubic-bezier(.2,1.3,.4,1) forwards;
+  animation-delay:calc(var(--i)*45ms)}
+.iword .amp,.word .amp{color:var(--accent)}
+@keyframes letter{to{opacity:1;transform:none}}
+
+/* ---- home: masthead ---- */
+.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}
+.word{font-family:var(--d);font-weight:900;text-transform:uppercase;line-height:.86;
+  font-size:clamp(46px,14vw,72px);letter-spacing:.005em}
+.mast .eyebrow{display:block;margin-bottom:6px}
+.wk{font-family:var(--l);font-weight:700;font-size:13px;letter-spacing:.06em;color:var(--muted);
+  text-align:right;line-height:1.2;flex:none;padding-bottom:4px}
+
+/* ---- home: replayable kicker ---- */
+.hero{position:relative;display:block;width:100%;aspect-ratio:16/11;max-width:100%;
+  border-radius:var(--r);overflow:hidden;border:1px solid var(--line);
+  background:linear-gradient(var(--sky0),var(--sky1));margin-bottom:12px;text-align:left}
+.hero svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.replay{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--l);font-weight:700;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--surface);color:var(--fg);border-radius:99px;padding:7px 13px 7px 10px;
+  box-shadow:0 2px 10px rgba(10,25,40,.18);transition:transform .15s}
+.hero:hover .replay{transform:translateY(-2px)}
+.replay svg{position:static;width:12px;height:12px;fill:var(--accent)}
+
+/* ---- home: lift-ticket week pass ---- */
+.ticket{position:relative;display:grid;grid-template-columns:1fr auto;margin-bottom:14px;
+  border-radius:var(--r);border:1px solid var(--line);overflow:hidden;
+  background:
+    repeating-linear-gradient(-45deg,transparent 0 9px,color-mix(in srgb,var(--accent) 5%,transparent) 9px 10px),
+    var(--surface)}
+.tk-main{padding:15px 16px 14px;min-width:0}
+.tk-n{display:flex;align-items:baseline;gap:6px;margin:4px 0 2px}
+.tk-n b{font-family:var(--d);font-weight:900;font-size:52px;line-height:.9}
+.tk-n span{font-family:var(--l);font-weight:700;font-size:17px;color:var(--muted);letter-spacing:.04em}
+.tk-sub{font-size:13px;color:var(--muted)}
+.tk-sub b{color:var(--done);font-weight:600}
+.tk-stub{position:relative;padding:14px 16px;border-left:2px dashed var(--line);
+  display:grid;grid-template-columns:repeat(2,34px);gap:10px;align-content:center}
+.tk-stub::before,.tk-stub::after{content:"";position:absolute;left:-11px;width:20px;height:20px;
+  border-radius:50%;background:var(--bg);border:1px solid var(--line)}
+.tk-stub::before{top:-11px}.tk-stub::after{bottom:-11px}
+.punch{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  box-shadow:inset 0 0 0 2px var(--line);background:var(--surface-2);position:relative}
+.punch i{width:12px;height:12px;border-radius:50%;opacity:.55}
+.punch.green i{background:var(--pg)}.punch.blue i{background:var(--pb)}
+.punch.red i{background:var(--pr)}.punch.black i{background:var(--pk)}
+.punch.on{box-shadow:none}
+.punch.on.green{background:var(--pg)}.punch.on.blue{background:var(--pb)}
+.punch.on.red{background:var(--pr)}.punch.on.black{background:var(--pk)}
+.punch.on i{display:none}
+.punch svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.punch.on.black svg{stroke:var(--bg)}
+.punch.pop{animation:punch .6s cubic-bezier(.2,1.6,.4,1)}
+.punch.pop svg path{stroke-dasharray:20;stroke-dashoffset:20;animation:draw .35s .25s forwards}
+@keyframes punch{0%{transform:scale(.4)}100%{transform:scale(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* ---- day cards ---- */
+.days{display:grid;gap:10px}
+.day{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
+  width:100%;text-align:left;padding:14px 16px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);
+  transition:border-color .15s,transform .15s,box-shadow .15s}
+.day:hover{border-color:var(--muted);transform:translateY(-1px);box-shadow:0 6px 18px -10px rgba(10,25,40,.35)}
+.day:active{transform:scale(.99)}
+.day.done{background:var(--done-soft);border-color:color-mix(in srgb,var(--done) 45%,transparent)}
+.sym{width:30px;height:30px;display:block;flex:none}
+.sym.sm{width:22px;height:22px}
+.sym .g{fill:var(--pg)}.sym .b{fill:var(--pb)}.sym .r{fill:var(--pr)}.sym .k{fill:var(--pk)}
+.day .nm{display:block;font-family:var(--d);font-weight:800;font-size:23px;line-height:1;
+  text-transform:uppercase;letter-spacing:.01em}
+.day .mt{display:block;font-family:var(--l);font-weight:600;font-size:13.5px;letter-spacing:.04em;
+  color:var(--muted);margin-top:4px}
+.day.done .mt{color:var(--done)}
+.chev{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  background:var(--surface-2);color:var(--muted);transition:transform .15s,background .15s}
+.chev svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.day:hover .chev{transform:translateX(2px);background:var(--accent);color:var(--accent-ink)}
+.tick{width:28px;height:28px;border-radius:50%;background:var(--done);display:grid;place-items:center}
+.tick svg{width:14px;height:14px;fill:none;stroke:var(--surface);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---- panels ---- */
+.panel{margin-top:14px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);padding:15px 16px}
+.panel>.eyebrow{display:block;margin-bottom:11px}
+.hint{margin:0;font-size:13.5px;color:var(--muted)}
+.lifts{display:grid;gap:10px}
+.lift{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:baseline}
+.ln{font-size:14px;min-width:0}
+.lv{font-family:var(--d);font-weight:800;font-size:21px;line-height:1}
+.lv small{font-family:var(--l);font-size:12px;font-weight:700;color:var(--muted);margin-left:2px}
+.ld{font-family:var(--l);font-weight:600;font-size:14px;color:var(--muted);min-width:38px;text-align:right}
+.ld.up{color:var(--done)} .ld.dn{color:var(--accent)}
+.hist{display:grid;gap:8px}
+.hrow{display:flex;align-items:center;gap:10px}
+.hdate{font-family:var(--l);font-weight:600;font-size:13px;color:var(--muted);width:52px;flex:none}
+.hdots{display:flex;gap:6px}
+.hdot{width:12px;height:12px;border-radius:50%;display:block}
+.hdot.green{background:var(--pg)} .hdot.blue{background:var(--pb)}
+.hdot.red{background:var(--pr)} .hdot.black{background:var(--pk)}
+.hdot.off{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
+.hfull{font-family:var(--l);font-size:12px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--done)}
+.notes ol{margin:0;padding-left:20px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+.notes b{color:var(--fg);font-weight:600}
+
+/* ---- day view ---- */
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--l);font-weight:700;
+  font-size:13.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:6px 0;margin-bottom:12px}
+.back svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.back:hover{color:var(--fg)}
+.sign{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin-bottom:10px}
+.sign .sym{width:46px;height:46px}
+.sign h1{font-weight:900;font-size:clamp(36px,10vw,50px);line-height:.88;text-transform:uppercase}
+.sign .eyebrow{display:block;margin-bottom:5px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 6px}
+.dnote{font-size:14px;color:var(--muted);margin:6px 0 16px}
+.ex{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px;margin-bottom:10px;display:grid;grid-template-columns:112px 1fr;gap:14px;
+  align-items:start}
+@media (max-width:420px){.ex{grid-template-columns:92px 1fr;gap:12px;padding:12px}}
+.artw{position:relative}
+.artw .num{position:absolute;left:-6px;top:-6px;width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;background:var(--fg);color:var(--bg);
+  font-family:var(--l);font-weight:700;font-size:13px}
+.art{width:100%;height:auto;display:block;border-radius:10px;border:1px solid var(--line);
+  background:linear-gradient(var(--surface-2),color-mix(in srgb,var(--surface-2) 60%,var(--surface)))}
+.exb{min-width:0}
+.exn{font-family:var(--d);font-weight:800;font-size:21px;line-height:1.02;text-transform:uppercase;letter-spacing:.01em}
+.stats{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 8px}
+.chip{font-family:var(--l);font-size:13px;font-weight:700;letter-spacing:.04em;
+  padding:3px 9px;border-radius:99px;background:var(--surface-2);
+  font-variant-numeric:tabular-nums}
+.chip.w{background:var(--accent-soft);color:var(--accent)}
+.cue{font-size:13.5px;color:var(--muted);line-height:1.45}
+.log{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.llab{font-family:var(--l);font-size:12px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted)}
+.lin{width:68px;padding:6px 8px;font:inherit;font-size:15px;border-radius:9px;
+  border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.lin:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.lu{font-size:13px;color:var(--muted);margin-left:-3px}
+.lprev{font-family:var(--l);font-weight:600;font-size:13px;color:var(--muted)}
+
+.finish{width:100%;margin-top:16px;padding:17px;border-radius:var(--r);
+  font-family:var(--d);font-weight:800;font-size:22px;letter-spacing:.03em;text-transform:uppercase;
+  background:var(--accent);color:var(--accent-ink);border:1px solid transparent;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 10px 24px -14px var(--accent);transition:transform .12s}
+.finish:active{transform:scale(.985)}
+.finish.on{background:var(--done-soft);color:var(--done);border-color:var(--done);box-shadow:none}
+.finish svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.finish.on.fresh svg path{stroke-dasharray:24;stroke-dashoffset:24;animation:draw .4s .1s forwards}
+
+/* ---- confetti ---- */
+.cf{position:fixed;width:7px;height:11px;border-radius:2px;pointer-events:none;z-index:70;
+  animation:cf 1.1s cubic-bezier(.15,.7,.35,1) forwards}
+@keyframes cf{
+  55%{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:1}
+  100%{transform:translate(calc(var(--dx)*1.25),calc(var(--dy) + 120px)) rotate(calc(var(--r)*2));opacity:0}}
+
+/* ---- view entrance ---- */
+.stag>*{animation:enter .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*45ms)}
+@keyframes enter{from{opacity:0;transform:translateY(10px)}}
+
+/* ---- figure drawing ---- */
+.lmb,.spine,.neck{fill:none;stroke:var(--fig);stroke-linecap:round;stroke-linejoin:round}
+.lmb{stroke-width:3.2}.neck{stroke-width:3}.spine{stroke-width:4.4}
+.lmb.far{opacity:.36}
+.hd{fill:var(--surface);stroke:var(--fig);stroke-width:2.6}
+.prop{fill:none;stroke:var(--prop);stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+.fillp{fill:var(--prop);fill-opacity:.22;stroke:var(--prop)}
+.grd{stroke:var(--prop);stroke-width:2;stroke-linecap:round;opacity:.7}
+.wt rect{fill:var(--fig)}
+.arw{fill:none;stroke:var(--accent);stroke-width:2.4;stroke-linecap:round}
+.ahd{fill:var(--accent)}
+.band{fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round;opacity:.85}
+.lbl{fill:var(--muted);font-family:var(--l);font-size:10px;font-weight:700;letter-spacing:.04em}
+.dash{stroke-dasharray:3 4;opacity:.5}
+/* each figure loops its rep; arrows breathe in time */
+.mv{transform-box:view-box}
+.hop{animation:hop 1.5s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes hop{0%,100%{transform:translateY(0)}20%{transform:translateY(3px)}42%{transform:translateY(-11px)}
+  62%{transform:translateY(0)}72%{transform:translateY(3px)}}
+.pogo{animation:pogo .62s infinite}
+@keyframes pogo{0%,100%{transform:translateY(0);animation-timing-function:cubic-bezier(.2,.7,.4,1)}
+  50%{transform:translateY(-7px);animation-timing-function:cubic-bezier(.6,0,.8,.3)}}
+.rise{animation:rise 2.2s ease-in-out infinite}
+@keyframes rise{0%,100%{transform:translateY(0)}35%,60%{transform:translateY(-4px)}}
+.rock{animation:rock 4s ease-in-out infinite alternate}
+@keyframes rock{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+.sway{animation:sway 3s ease-in-out infinite alternate}
+@keyframes sway{from{transform:rotate(-2.5deg)}to{transform:rotate(2.5deg)}}
+.wob{animation:wob 2.4s ease-in-out infinite alternate}
+@keyframes wob{from{transform:rotate(-1.2deg)}to{transform:rotate(1.2deg)}}
+.shuf{animation:shuf 2.4s ease-in-out infinite alternate}
+@keyframes shuf{from{transform:translateX(-3px)}to{transform:translateX(3px)}}
+.dip{animation:dip 2.8s ease-in-out infinite}
+@keyframes dip{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+.art .arw,.art .ahd,.art .band{animation:cue 1.5s ease-in-out infinite}
+@keyframes cue{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ---- hero scene ---- */
+.base{fill:var(--snow)}
+.mfar{fill:var(--mfar)}
+.mnear{fill:var(--mnear)}
+.cap{fill:var(--cap)}
+.vfloor{fill:var(--vfloor)}
+.tree{fill:var(--tree)}
+.sn{fill:var(--snow);stroke:var(--line);stroke-width:1.5}
+.lipline{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-dasharray:5 5;opacity:.6}
+.shadow{fill:var(--fig);opacity:.2}
+.rboard{fill:var(--fg)}
+.rbase{fill:var(--accent)}
+.rbind{fill:var(--accent)}
+.rpant{fill:none;stroke:var(--fg);stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+.rjkt{fill:var(--kit)}
+.rjkt2{fill:var(--kit2)}
+.rarm{fill:none;stroke:var(--kit);stroke-width:6.2;stroke-linecap:round;stroke-linejoin:round}
+.rmitt{fill:var(--fg)}
+.rhead{fill:var(--fg)}
+.rgog{fill:var(--lens)}
+.rbean{fill:var(--fg)}
+.rpom{fill:var(--kit)}
+
+@media (prefers-reduced-motion:reduce){
+  .snowL i{animation:none;opacity:.25}
+  .art *,.stag>*,.punch,.punch svg path,.iword span,.finish svg path{animation:none!important;opacity:1;stroke-dashoffset:0}
+  .day,.chev,.replay{transition:none}
+}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+/* ============ figure drawing kit ============ */
+const pt=p=>p[0]+' '+p[1];
+const pl=(a,c)=>`<polyline class="${c}" points="${a.map(pt).join(' ')}"/>`;
+const floor=(y=92)=>`<line class="grd" x1="3" y1="${y}" x2="117" y2="${y}"/>`;
+const box=(x,y,w,h)=>`<rect class="prop" x="${x}" y="${y}" width="${w}" height="${h}" rx="2"/>`;
+const slab=(x,y,w,h)=>`<rect class="prop fillp" x="${x}" y="${y}" width="${w}" height="${h}" rx="2"/>`;
+const bench=(x,y,w,h)=>slab(x,y,w,h)+
+  `<line class="prop" x1="${x+5}" y1="${y+h}" x2="${x+5}" y2="92"/>`+
+  `<line class="prop" x1="${x+w-5}" y1="${y+h}" x2="${x+w-5}" y2="92"/>`;
+const wallp=x=>slab(x,2,6,90);
+const dbell=(x,y)=>`<g class="wt"><rect x="${x-7.5}" y="${y-3.4}" width="4" height="6.8" rx="1.2"/>`+
+  `<rect x="${x+3.5}" y="${y-3.4}" width="4" height="6.8" rx="1.2"/>`+
+  `<rect x="${x-4}" y="${y-1.1}" width="8" height="2.2" rx="1"/></g>`;
+/* a looping rep: cls picks the keyframes, o is the pivot for rotations */
+const mv=(cls,inner,o)=>`<g class="mv ${cls}"${o?` style="transform-origin:${o}"`:''}>${inner}</g>`;
+function ahead(x,y,a,s){s=s||4.4;
+  const p=(k)=>[(x+s*Math.cos(a+k)).toFixed(1),(y+s*Math.sin(a+k)).toFixed(1)].join(',');
+  return `<polygon class="ahd" points="${x},${y} ${p(2.55)} ${p(-2.55)}"/>`;}
+function arw(x1,y1,x2,y2){const a=Math.atan2(y2-y1,x2-x1);
+  return `<line class="arw" x1="${x1}" y1="${y1}" x2="${(x2-3.6*Math.cos(a)).toFixed(1)}" y2="${(y2-3.6*Math.sin(a)).toFixed(1)}"/>`+ahead(x2,y2,a);}
+function qarw(x1,y1,cx,cy,x2,y2){const a=Math.atan2(y2-cy,x2-cx);
+  return `<path class="arw" d="M${x1} ${y1} Q${cx} ${cy} ${x2} ${y2}"/>`+ahead(x2,y2,a);}
+function darw(x1,y1,x2,y2){const a=Math.atan2(y2-y1,x2-x1);
+  return `<line class="arw" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`+ahead(x2,y2,a)+ahead(x1,y1,a+Math.PI);}
+function zig(x1,y1,x2,y2,n){n=n||8;let d='M'+x1+' '+y1,dx=x2-x1,dy=y2-y1,
+  L=Math.hypot(dx,dy),px=-dy/L*2.6,py=dx/L*2.6;
+  for(let i=1;i<n;i++){const t=i/n,s=i%2?1:-1;
+    d+=` L${(x1+dx*t+px*s).toFixed(1)} ${(y1+dy*t+py*s).toFixed(1)}`;}
+  return `<path class="band" d="${d} L${x2} ${y2}"/>`;}
+function body(o){
+  let s='';
+  (o.far||[]).forEach(a=>s+=pl([o.hip].concat(a),'lmb far'));
+  (o.farArm||[]).forEach(a=>s+=pl([o.sh].concat(a),'lmb far'));
+  s+=pl([o.sh,o.head],'neck');
+  s+=pl([o.hip,o.sh],'spine');
+  (o.near||[]).forEach(a=>s+=pl([o.hip].concat(a),'lmb'));
+  (o.arm||[]).forEach(a=>s+=pl([o.sh].concat(a),'lmb'));
+  s+=`<circle class="hd" cx="${o.head[0]}" cy="${o.head[1]}" r="${o.hr||5.6}"/>`;
+  return s;
+}
+const S=i=>`<svg class="art" viewBox="0 0 120 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${i}</svg>`;
+
+/* ============ the 24 figures ============ */
+const ART={
+jumpsquat:()=>S(floor()+
+  `<line class="grd dash" x1="40" y1="88" x2="68" y2="88"/>`+
+  mv('hop',body({head:[52,13],sh:[52,25],hip:[52,47],
+    far:[[[46,62],[42,76],[48,79]]],farArm:[[[46,35],[44,46]]],
+    near:[[[60,62],[56,76],[63,79]]],arm:[[[60,35],[64,46]]]})+
+  dbell(66,46))+arw(90,72,90,26)),
+
+pistol:()=>S(floor()+box(62,70,38,22)+
+  body({head:[50,20],sh:[50,31],hip:[60,63],
+    far:[[[43,60],[27,57],[21,53]]],farArm:[[[41,37],[30,40]]],
+    near:[[[52,76],[50,90],[42,91]]],
+    arm:[[[40,35],[28,36]]]})+
+  arw(108,50,108,76)),
+
+hipthrust:()=>S(floor()+bench(4,48,38,6)+
+  body({head:[11,41],sh:[20,46],hip:[58,54],
+    far:[[[76,44],[94,36],[100,33]]],farArm:[[[26,53],[15,53]]],
+    near:[[[76,57],[77,90],[85,91]]],arm:[[[28,56],[17,57]]]})+
+  dbell(57,47)+arw(44,76,44,60)),
+
+legcurl:()=>S(floor()+slab(18,58,80,7)+
+  `<line class="prop" x1="24" y1="65" x2="24" y2="92"/><line class="prop" x1="92" y1="65" x2="92" y2="92"/>`+
+  box(102,42,14,50)+
+  body({head:[14,52],sh:[24,56],hip:[60,57],
+    far:[[[77,56],[84,42],[86,37]]],farArm:[[[26,66],[34,68]]],
+    near:[[[78,57],[86,40],[88,35]]],arm:[[[28,66],[36,68]]]})+
+  `<circle class="prop" cx="88" cy="36" r="4.5"/>`+
+  qarw(104,30,98,24,92,30)+`<text class="lbl" x="96" y="22">4s</text>`),
+
+calfraise:()=>S(floor()+slab(30,84,56,8)+
+  mv('rise',body({head:[58,11],sh:[58,23],hip:[58,46],
+    far:[[[55,65],[55,77],[65,84]]],farArm:[[[52,34],[50,47]]],
+    near:[[[61,65],[61,77],[72,84]]],arm:[[[64,34],[66,47]]]})+
+  dbell(68,47))+arw(96,78,96,54)),
+
+copenhagen:()=>S(floor()+bench(68,54,46,6)+
+  body({head:[19,57],sh:[27,65],hip:[57,60],
+    far:[[[74,69],[92,74]]],
+    near:[[[77,57],[96,54]]],arm:[[[19,87],[31,90]]]})+
+  `<line class="arw" x1="57" y1="72" x2="57" y2="64"/>`+ahead(57,63,-Math.PI/2)),
+
+/* Cossack: very wide fixed stance, hips drop below the knee, goblet at the chest,
+   straight leg on its heel with the toes pointing up; the hips travel, the feet don't */
+cossack:()=>S(floor()+
+  body({head:[41,32],sh:[40,44],hip:[36,72],
+    near:[[[22,63],[22,90]],[[100,86]]],
+    arm:[[[33,54],[44,51]],[[47,54],[46,50]]]})+
+  `<g class="wt"><rect x="41" y="42" width="9" height="4" rx="1.2"/><rect x="44.3" y="45" width="2.4" height="7"/>`+
+  `<rect x="41" y="51" width="9" height="4" rx="1.2"/></g>`+
+  `<line class="lmb" x1="16" y1="91" x2="28" y2="91"/>`+
+  `<line class="lmb" x1="100" y1="87" x2="102" y2="78"/>`+
+  `<text class="lbl" x="74" y="74">toes up</text>`+
+  darw(58,20,96,20)+`<text class="lbl" x="60" y="14">feet stay</text>`),
+
+/* Lateral lunge: step out from centre, sit back into that hip, other foot flat,
+   dumbbells hanging either side of the working knee */
+latlunge:()=>S(floor()+
+  `<line class="lmb dash" x1="46" y1="91" x2="58" y2="91"/>`+
+  body({head:[66,22],sh:[64,34],hip:[60,60],
+    near:[[[82,69],[84,90]],[[30,90]]],
+    arm:[[[57,46],[55,59]],[[71,46],[74,59]]]})+
+  dbell(55,61)+dbell(74,61)+
+  `<line class="lmb" x1="22" y1="91" x2="34" y2="91"/><line class="lmb" x1="78" y1="91" x2="90" y2="91"/>`+
+  arw(50,97,84,97)+`<text class="lbl" x="92" y="99">step</text>`),
+
+slrdl:()=>S(floor()+
+  body({head:[21,39],sh:[30,44],hip:[63,40],
+    far:[[[80,35],[96,30]]],farArm:[[[28,55],[28,68]]],
+    near:[[[66,63],[64,90],[72,91]]],arm:[[[33,56],[33,69]]]})+
+  dbell(33,70)+arw(13,50,13,76)),
+
+soleus:()=>S(floor()+bench(16,60,44,7)+
+  body({head:[25,29],sh:[28,40],hip:[35,60],
+    far:[[[60,58],[60,82]]],farArm:[[[34,48],[44,52]]],
+    near:[[[63,60],[63,83],[74,90]]],arm:[[[38,48],[48,53]]]})+
+  dbell(48,54)+arw(84,78,84,58)+`<text class="lbl" x="56" y="50">90°</text>`),
+
+pogo:()=>S(floor()+`<line class="grd dash" x1="42" y1="88" x2="62" y2="88"/>`+
+  mv('pogo',body({head:[52,13],sh:[52,25],hip:[52,47],
+    far:[[[49,64],[48,80],[54,84]]],farArm:[[[45,36],[42,47]]],
+    near:[[[55,64],[56,80],[62,84]]],arm:[[[59,36],[62,47]]]}))+
+  darw(84,30,84,74)),
+
+boxjump:()=>S(floor()+box(62,62,44,30)+
+  body({head:[80,13],sh:[79,24],hip:[81,37],
+    far:[[[78,48],[77,60]]],farArm:[[[71,30],[64,34]]],
+    near:[[[83,48],[83,60],[91,61]]],arm:[[[73,29],[65,31]]]})+
+  qarw(18,84,38,36,66,58)),
+
+depthdrop:()=>S(floor()+box(8,58,36,34)+
+  body({head:[76,29],sh:[75,39],hip:[74,54],
+    far:[[[72,71],[71,90]]],farArm:[[[66,45],[60,52]]],
+    near:[[[78,71],[79,90],[87,91]]],arm:[[[68,44],[61,50]]]})+
+  qarw(50,54,58,68,66,80)+`<text class="lbl" x="92" y="40">3s</text>`),
+
+bound:()=>S(floor()+
+  body({head:[76,15],sh:[76,27],hip:[76,52],
+    far:[[[62,66],[50,77]]],farArm:[[[64,35],[54,30]]],
+    near:[[[79,70],[81,90]]],arm:[[[86,35],[96,31]]]})+
+  `<line class="lmb" x1="75" y1="91" x2="88" y2="91"/>`+
+  qarw(14,86,36,58,62,76)),
+
+rollerhold:()=>S(floor()+
+  `<circle class="prop" cx="60" cy="85" r="7"/>`+
+  mv('sway',`<rect class="prop fillp" x="18" y="71" width="84" height="7" rx="2"/>`+
+  body({head:[60,17],sh:[60,29],hip:[60,45],
+    far:[[[47,57],[45,70]]],farArm:[[[47,37],[38,31]]],
+    near:[[[73,57],[75,70]]],arm:[[[73,37],[82,31]]]})+
+  `<line class="lmb" x1="39" y1="71" x2="51" y2="71"/><line class="lmb" x1="69" y1="71" x2="81" y2="71"/>`,'60px 78px')),
+
+rollersquat:()=>S(floor()+
+  `<rect class="prop fillp" x="18" y="71" width="84" height="7" rx="2"/>`+
+  `<circle class="prop" cx="60" cy="85" r="7"/>`+
+  body({head:[60,29],sh:[60,40],hip:[60,56],
+    far:[[[45,63],[44,70]]],farArm:[[[51,49],[52,58]]],
+    near:[[[75,63],[76,70]]],arm:[[[69,49],[68,58]]]})+
+  `<line class="lmb" x1="39" y1="71" x2="51" y2="71"/><line class="lmb" x1="69" y1="71" x2="81" y2="71"/>`+
+  darw(106,36,106,60)),
+
+sideplank:()=>S(floor()+
+  body({head:[23,61],sh:[30,70],hip:[62,78],
+    far:[[[80,84],[99,90]]],
+    near:[[[80,66],[99,57]]],arm:[[[26,90],[40,92]]]})+
+  arw(106,64,106,46)),
+
+edge2edge:()=>S(floor()+
+  `<circle class="prop" cx="60" cy="86" r="6.5"/>`+
+  mv('rock',`<rect class="prop fillp" x="18" y="72" width="84" height="7" rx="2"/>`+
+  body({head:[60,22],sh:[60,33],hip:[60,48],
+    far:[[[48,59],[46,71]]],farArm:[[[48,41],[39,36]]],
+    near:[[[72,59],[74,71]]],arm:[[[72,41],[81,36]]]})+
+  `<line class="lmb" x1="40" y1="72" x2="51" y2="72"/><line class="lmb" x1="69" y1="72" x2="80" y2="72"/>`,'60px 79px')+
+  `<path class="arw" d="M26 54 Q60 38 96 54"/>`+ahead(97,55,0.9)+ahead(25,55,Math.PI-0.9)),
+
+edgehold:()=>S(floor()+
+  `<circle class="prop" cx="60" cy="86" r="6.5"/>`+
+  mv('wob',`<rect class="prop fillp" x="18" y="70" width="84" height="7" rx="2" transform="rotate(10 60 74)"/>`+
+  body({head:[58,22],sh:[58,33],hip:[58,48],
+    far:[[[47,58],[44,66]]],farArm:[[[46,41],[37,36]]],
+    near:[[[70,60],[74,74]]],arm:[[[70,41],[79,34]]]}),'60px 80px')+
+  `<line class="arw" x1="97" y1="88" x2="97" y2="83"/><line class="arw" x1="92" y1="90" x2="102" y2="90"/>`+
+  `<text class="lbl" x="76" y="99">stop here</text>`),
+
+rotation:()=>S(floor()+
+  `<rect class="prop fillp" x="18" y="71" width="84" height="7" rx="2"/>`+
+  `<circle class="prop" cx="60" cy="85" r="7"/>`+
+  `<line class="prop dash" x1="18" y1="65" x2="102" y2="65"/>`+
+  body({head:[60,26],sh:[60,37],hip:[60,51],
+    far:[[[48,60],[46,71]]],farArm:[[[49,43],[42,50]]],
+    near:[[[72,60],[74,71]]],arm:[[[71,43],[78,50]]]})+
+  `<path class="arw" d="M30 20 Q60 6 90 20"/>`+ahead(91,21,1.0)+ahead(29,21,Math.PI-1.0)),
+
+eversion:()=>S(floor(94)+slab(6,46,8,48)+
+  `<path class="lmb" d="M44 30 L42 68"/>`+
+  `<path class="lmb" d="M42 68 Q40 82 54 83 L84 79"/>`+
+  `<path class="lmb" d="M84 79 L82 70 L48 72"/>`+
+  zig(14,76,80,75,9)+
+  qarw(92,62,104,70,98,84)+`<text class="lbl" x="66" y="44">out</text>`),
+
+inversion:()=>S(floor(94)+slab(106,46,8,48)+
+  `<path class="lmb" d="M76 30 L78 68"/>`+
+  `<path class="lmb" d="M78 68 Q80 82 66 83 L36 79"/>`+
+  `<path class="lmb" d="M36 79 L38 70 L72 72"/>`+
+  zig(40,75,106,76,9)+
+  qarw(28,62,16,70,22,84)+
+  arw(30,54,30,36)+`<text class="lbl" x="36" y="40">up</text>`),
+
+bandwalk:()=>S(floor()+
+  mv('shuf',body({head:[56,16],sh:[56,28],hip:[56,47],
+    far:[[[42,62],[36,90]]],farArm:[[[48,38],[48,48]]],
+    near:[[[73,62],[80,90]]],arm:[[[64,38],[64,48]]]})+
+  zig(44,62,71,62,7)+
+  `<line class="lmb" x1="29" y1="91" x2="42" y2="91"/><line class="lmb" x1="74" y1="91" x2="87" y2="91"/>`)+
+  arw(96,80,110,80)),
+
+wallsit:()=>S(floor()+wallp(16)+
+  body({head:[31,28],sh:[31,40],hip:[33,62],
+    far:[[[62,64],[58,90],[66,91]]],farArm:[[[42,52],[54,50]]],
+    near:[[[72,62],[72,90],[80,91]]],arm:[[[44,51],[56,49]]]})+
+  `<path class="prop" d="M66 62 L72 62 L72 56" opacity=".8"/>`+
+  `<text class="lbl" x="74" y="52">90°</text>`)
+};
+
+/* ============ programme ============ */
+const DAYS=[
+ {id:'gym1',kind:'Gym - Jump',name:'Pop &amp; Landing',piste:'black',grade:'Black',mins:40,
+  note:'Rest 2 min on 1–3, 90 s after. About 40 min.',
+  ex:[
+   {k:'jumpsq',u:'kg',n:'DB jump squat',s:'4 × 5',w:'2 × 5 → 8 kg',a:'jumpsquat',
+    c:'Quarter squat, explode up, land soft and reset. If you can’t jump high, the weight is too heavy.'},
+   {n:'Single-leg box squat → pistol',s:'4 × 6 per leg',w:'Bodyweight',a:'pistol',
+    c:'Sit back to the box, tap, stand without pushing off. Lower under control and keep your heel down.'},
+   {k:'slht',u:'kg',n:'Single-leg hip thrust',s:'4 × 12 per leg',w:'12 kg + knee band',a:'hipthrust',
+    c:'Shoulders on the bench, chin tucked, ribs down. Squeeze hard at the top.'},
+   {k:'legcurl',u:'kg',n:'Eccentric leg curl',s:'4 × 8',w:'30 → 45 kg',a:'legcurl',
+    c:'Curl up in 1 second, lower over 4. The slow lowering is your knee protection on flat landings.'},
+   {k:'calf',u:'kg',n:'Standing calf raise',s:'3 × 15',w:'2 × 12 kg',a:'calfraise',
+    c:'Full stretch at the bottom, explosive up, 1 second hold. This is your last joint at takeoff.'}]},
+
+ {id:'gym2',kind:'Gym - Carve',name:'Carving &amp; Edge',piste:'red',grade:'Red',mins:40,
+  note:'Rest 90 s. About 40 min.',
+  ex:[
+   {n:'Copenhagen plank',s:'4 × 30 s per side',w:'Bodyweight',a:'copenhagen',
+    c:'Bench under the knee to start, under the ankle when ready. Hips high, squeeze the bench down.'},
+   {k:'cossack',u:'kg',n:'Cossack squat',s:'3 × 8 per side',w:'BW → 12 kg goblet',a:'cossack',
+    c:'Wide stance, shift all the way onto one leg, other leg straight with the toes up.'},
+   {k:'latlunge',u:'kg',n:'Lateral lunge',s:'3 × 10 per side',w:'2 × 8 → 12 kg',a:'latlunge',
+    c:'Step directly sideways, sit into that hip, push back to centre.'},
+   {k:'slrdl',u:'kg',n:'Single-leg RDL',s:'3 × 10 per leg',w:'2 × 10 → 12 kg',a:'slrdl',
+    c:'Hips square, free leg extends behind like a seesaw. Slow and controlled.'},
+   {k:'soleus',u:'kg',n:'Bent-knee calf raise',s:'3 × 20',w:'2 × 12 kg',a:'soleus',
+    c:'Dumbbells on your thighs in a quarter squat. The knee bend shifts the work to soleus — your toeside edge hold.'}]},
+
+ {id:'homea',kind:'Home - Jump',name:'Jumps &amp; Landing',piste:'blue',grade:'Blue',mins:35,
+  note:'Full rest between jump sets. Stop a set the moment reps slow down. About 35 min.',
+  ex:[
+   {n:'Pogo hops',s:'3 × 20',w:'Bodyweight',a:'pogo',
+    c:'Small fast bounces off the balls of your feet, knees nearly straight. Minimum ground contact.'},
+   {k:'boxjump',u:'cm',n:'Box jump',s:'4 × 3',w:'40 → 55 cm',a:'boxjump',
+    c:'Dip fast and reverse instantly — the speed of the dip is your pop. Step down, never jump down.'},
+   {k:'depthdrop',u:'cm',n:'Depth drop to stick',s:'4 × 3',w:'30 → 45 cm',a:'depthdrop',
+    c:'Step off, land, absorb into a quarter squat, freeze 3 seconds. Silent landings only.'},
+   {n:'Lateral bound',s:'4 × 4 per side',w:'Bodyweight',a:'bound',
+    c:'Push off one leg, land on the other, hold 2 full seconds before the next rep.'},
+   {n:'Roller board — centred hold',s:'3 × 60 s',w:'Bodyweight',a:'rollerhold',
+    c:'Feet at board-stance width, roller under the middle of the deck. Progress with eyes closed.'},
+   {n:'Roller board — quarter squat',s:'3 × 10',w:'Bodyweight',a:'rollersquat',
+    c:'Stay centred as you drop and stand. Slow, no rocking.'},
+   {n:'Side plank, top leg lifted',s:'3 × 30 s per side',w:'Bodyweight',a:'sideplank',
+    c:'Forearm down, body straight, raise the top leg and hold. Glute med and adductor together.'}]},
+
+ {id:'homeb',kind:'Home - Carve',name:'Edge &amp; Ankle',piste:'green',grade:'Green',mins:35,
+  note:'Low intensity, high control. About 35 min.',
+  ex:[
+   {n:'Roller board — edge-to-edge rolls',s:'3 × 20 (5 s each way)',w:'Bodyweight',a:'edge2edge',
+    c:'Slow and even. The tempo is the exercise — fast rocking trains almost nothing.'},
+   {n:'Roller board — edge hold',s:'3 × 20 s per side',w:'Bodyweight',a:'edgehold',
+    c:'Roll to one side and stop just before the deck touches down. Hold there. This is the carve.'},
+   {n:'Roller board — rotation hold',s:'3 × 30 s',w:'Bodyweight',a:'rotation',
+    c:'Stay centred, twist your shoulders, keep the board still underneath you.'},
+   {n:'Band eversion',s:'3 × 20 per side',w:'Light band',a:'eversion',
+    c:'Anchor low, leg straight, turn the sole of your foot outward. 2 seconds back. Peroneals.'},
+   {n:'Band inversion + dorsiflexion',s:'3 × 15 per side each',w:'Light band',a:'inversion',
+    c:'Inversion: the sole turns inward. Dorsiflexion: pull your foot toward your shin.'},
+   {n:'Lateral band walk',s:'3 × 15 each way',w:'Medium loop band',a:'bandwalk',
+    c:'Stay low in a quarter squat. Feet never come together.'},
+   {n:'Wall sit, snowboard stance',s:'3 × 60 s',w:'Bodyweight',a:'wallsit',
+    c:'Feet staggered like your board stance, thighs parallel. Swap lead foot each set.'}]}
+];
+const DAY_BY_ID=Object.fromEntries(DAYS.map(d=>[d.id,d]));
+
+/* piste markers: green and blue keep the disc, red too; black gets the diamond riders know */
+const SYM={
+  green:'<circle class="g" cx="15" cy="15" r="12"/>',
+  blue:'<circle class="b" cx="15" cy="15" r="12"/>',
+  red:'<circle class="r" cx="15" cy="15" r="12"/>',
+  black:'<path class="k" d="M15 2 L28 15 L15 28 L2 15 Z"/>'
+};
+const sym=(p,c)=>`<svg class="sym${c?' '+c:''}" viewBox="0 0 30 30" aria-hidden="true">${SYM[p]}</svg>`;
+const ICON={
+  chev:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3 L11 8 L6 13"/></svg>',
+  back:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 L5 8 L10 13"/></svg>',
+  tick:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 L6.5 12 L13 4.5"/></svg>',
+  play:'<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1 L11 6 L2 11 Z"/></svg>'
+};
+
+/* ============ state ============ */
+function weekStart(d){d=d||new Date();
+  const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  x.setDate(x.getDate()-((x.getDay()+6)%7));
+  return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');}
+function weekLabel(){
+  const s=new Date(weekStart()+'T00:00:00'),e=new Date(s);e.setDate(e.getDate()+6);
+  const f=new Intl.DateTimeFormat(undefined,{day:'numeric',month:'short'});
+  return f.format(s)+' – '+f.format(e);}
+
+const KEY='carvepop.v1', KEEP=26;
+let state={week:weekStart(),done:{},log:{},hist:{}};
+let db=null,ref=null,hydrated=false;
+
+function weekKeys(n){const out=[],d=new Date(weekStart()+'T00:00:00');
+  for(let i=0;i<n;i++){out.push(weekStart(d));d.setDate(d.getDate()-7);}return out;}
+function trim(o){const k=Object.keys(o).sort().slice(-KEEP),r={};k.forEach(x=>r[x]=o[x]);return r;}
+function fresh(){return {week:weekStart(),done:{},log:{},hist:{}};}
+/* snapshots from the store are frozen, so copy before anything becomes app state */
+function obj(v){return (v&&typeof v==='object'&&!Array.isArray(v))?Object.assign({},v):{};}
+function obj2(v){const o=obj(v),r={};
+  for(const k in o)r[k]=Array.isArray(o[k])?o[k].slice():obj(o[k]);return r;}
+function normalise(s){
+  if(!s||typeof s!=='object')return fresh();
+  const o={week:typeof s.week==='string'?s.week:weekStart(),
+    done:obj(s.done), log:obj2(s.log), hist:obj2(s.hist)};
+  if(o.week!==weekStart()){                 /* new week: bank the old one, keep the numbers */
+    const h=obj2(o.hist), d=Object.keys(o.done);
+    if(d.length)h[o.week]=d;
+    return {week:weekStart(),done:{},log:o.log,hist:trim(h)};
+  }
+  return o;}
+function isEmpty(st){return !Object.keys(st.done).length&&!Object.keys(st.log).length
+  &&!Object.keys(st.hist).length;}
+/* consecutive full weeks; this week counts once all four are in, and never breaks the run */
+function streak(){let n=0;
+  for(const k of weekKeys(KEEP+1)){
+    const set=k===state.week?Object.keys(state.done):(state.hist[k]||[]);
+    if(set.length>=4)n++;else if(k!==state.week)break;}
+  return n;}
+function liftRows(){
+  const rows=[];
+  DAYS.forEach(d=>d.ex.forEach(e=>{
+    if(!e.k)return;
+    const h=state.log[e.k];if(!h)return;
+    const ks=Object.keys(h).sort();if(!ks.length)return;
+    const first=h[ks[0]], last=h[ks[ks.length-1]];
+    rows.push({n:e.n,u:e.u,v:last,d:last-first,when:ks[ks.length-1]});
+  }));
+  return rows;}
+function readLocal(){try{return normalise(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){return fresh();}}
+function writeLocal(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+let pending=null;
+function save(){
+  writeLocal();
+  if(!ref)return;
+  clearTimeout(pending);
+  pending=setTimeout(()=>{ref.set({week:state.week,done:state.done,
+    log:state.log,hist:state.hist}).catch(()=>{});},350);
+}
+
+/* ============ views ============ */
+const app=document.getElementById('app');
+const doneCount=()=>DAYS.filter(d=>state.done[d.id]).length;
+
+/* ---------- the jump, built from the physics ----------
+   In flight, horizontal speed is constant and vertical speed is not, so the rider hangs
+   at the apex and accelerates into the landing: a quadratic Bezier whose control point
+   sits halfway along in x is an exact parabola when stepped by clock time. The path
+   tracks the centre of mass, the board hangs off it, and one backward rotation from the
+   lip angle lands flush with the slope. On top of that the rider now loads and pops at
+   the lip, tucks in the air, absorbs the landing, throws spray and leaves a trail. */
+
+const RS=[[0,277],[86,274.1],[136,176]];       /* kicker surface: in-run, transition, lip */
+const KNUCKLE=[228,160], SLOPE_D=0.781;        /* landing ramp, 38 degrees */
+const SLOPE_A=Math.atan(SLOPE_D)*180/Math.PI;
+const TAKEOFF_A=-63;                           /* lip angle, in SVG degrees */
+const COM=18.3;                                /* centre of mass above the board */
+const T_RAMP=520,T_AIR=1500,T_OUT=300;         /* ms */
+
+function qAt(C,t){const a=(1-t)*(1-t),b=2*(1-t)*t,c=t*t;
+  return [a*C[0][0]+b*C[1][0]+c*C[2][0], a*C[0][1]+b*C[1][1]+c*C[2][1]];}
+function qD(C,t){return [2*(1-t)*(C[1][0]-C[0][0])+2*t*(C[2][0]-C[1][0]),
+                         2*(1-t)*(C[1][1]-C[0][1])+2*t*(C[2][1]-C[1][1])];}
+
+/* in-run, offset to the CoM along the surface normal, measured by arc length */
+const RAMPC=(function(){
+  const p=[];
+  for(let i=0;i<=120;i++){
+    const u=i/120,q=qAt(RS,u),d=qD(RS,u),L=Math.hypot(d[0],d[1]);
+    p.push({x:q[0]+COM*d[1]/L, y:q[1]-COM*d[0]/L,
+            a:Math.atan2(d[1],d[0])*180/Math.PI});
+  }
+  p[0].s=0;
+  for(let i=1;i<p.length;i++)p[i].s=p[i-1].s+Math.hypot(p[i].x-p[i-1].x,p[i].y-p[i-1].y);
+  return p;
+})();
+const RAMP_L=RAMPC[RAMPC.length-1].s;
+
+/* flight: P1.x halfway along, so the Bezier parameter is time and the arc is ballistic */
+const AIRC=(function(){
+  const a=RAMPC[RAMPC.length-1], A0=[a.x,a.y];
+  const sx=330, sy=KNUCKLE[1]+(sx-KNUCKLE[0])*SLOPE_D, n=Math.hypot(1,SLOPE_D);
+  const A2=[sx+COM*SLOPE_D/n, sy-COM/n];
+  const mx=(A0[0]+A2[0])/2;
+  return [A0,[mx,A0[1]-(mx-A0[0])*Math.tan(-TAKEOFF_A*Math.PI/180)],A2];
+})();
+const V_LIP=2*Math.hypot(AIRC[1][0]-AIRC[0][0],AIRC[1][1]-AIRC[0][1])/(T_AIR/1000);
+const V_LAND=2*Math.hypot(AIRC[2][0]-AIRC[1][0],AIRC[2][1]-AIRC[1][1])/(T_AIR/1000);
+const V_IN=2*RAMP_L/(T_RAMP/1000)-V_LIP;       /* eases off up the transition */
+/* one backward rotation from the lip angle that ends flush with the slope */
+const ROT=(((TAKEOFF_A-SLOPE_A)%360)+360)%360;  /* degrees of backflip */
+
+function posAt(s){
+  const p=RAMPC;s=Math.max(0,Math.min(RAMP_L,s));
+  let lo=0,hi=p.length-1;
+  while(lo<hi-1){const m=(lo+hi)>>1;if(p[m].s<=s)lo=m;else hi=m;}
+  const a=p[lo],b=p[lo+1],k=(s-a.s)/((b.s-a.s)||1);
+  return {x:a.x+(b.x-a.x)*k, y:a.y+(b.y-a.y)*k, a:a.a+(b.a-a.a)*k};
+}
+
+/* a few conifers along a ridge */
+function trees(spec){
+  let o='';
+  spec.forEach(t=>{const[x,y,h]=t,w=h*.42;
+    o+=`<path class="tree" d="M${x} ${y} L${x-w} ${y} L${x-w*.35} ${y-h*.45} L${x-w*.7} ${y-h*.45} L${x} ${y-h} L${x+w*.7} ${y-h*.45} L${x+w*.35} ${y-h*.45} L${x+w} ${y} Z"/>`;});
+  return o;
+}
+const SCENERY=
+  /* far range */
+  `<path class="mfar" d="M-60 184 L-10 126 L22 152 L64 92 L104 142 L138 116 L182 158
+     L220 104 L258 148 L302 96 L344 146 L384 112 L480 180 L480 240 L-60 240 Z"/>`
+  +`<path class="cap" opacity=".7" d="M64 92 L76 108 L68 105 L61 111 L55 104 L50 108 Z"/>`
+  +`<path class="cap" opacity=".7" d="M302 96 L314 112 L306 109 L299 115 L293 108 L289 112 Z"/>`
+  +`<path class="cap" opacity=".7" d="M220 104 L230 118 L223 115 L217 120 L212 114 L209 117 Z"/>`
+  /* near range with snow caps */
+ +`<path class="mnear" d="M-60 208 L-6 150 L30 184 L80 132 L128 186 L178 146 L226 188
+     L280 138 L330 184 L382 150 L480 210 L480 250 L-60 250 Z"/>`
+ +`<path class="cap" d="M80 132 L95 154 L86 150 L78 158 L70 150 L63 154 Z"/>`
+ +`<path class="cap" d="M280 138 L296 160 L287 155 L279 163 L271 155 L264 160 Z"/>`
+ +`<path class="cap" d="M-6 150 L8 170 L1 166 L-7 173 L-14 166 L-20 170 Z"/>`
+ +`<path class="cap" d="M382 150 L394 166 L387 163 L380 169 L374 163 L369 166 Z"/>`
+  /* valley floor behind the jump */
+ +`<path class="vfloor" d="M-60 222 Q90 212 200 224 Q310 236 480 220 L480 320 L-60 320 Z"/>`
+ +trees([[160,226,17],[172,229,12],[186,227,20],[199,231,13],[211,229,16],[222,232,11],
+         [8,222,15],[20,224,11],[33,223,18],[400,224,16],[413,226,12],[388,227,11]]);
+
+const TERRAIN=
+   `<rect class="base" x="-200" y="274" width="900" height="420"/>`
+  +`<path class="sn" d="M-60 430 L-60 279 L0 277 Q86 274.1 136 176 L150 176 L150 430 Z"/>`
+  +`<path class="lipline" d="M136 177 L150 177"/>`
+  +`<path class="sn" d="M228 430 L228 160 L480 357 L480 430 Z"/>`
+  +`<path class="lipline" d="M229 161 L250 177.4"/>`;
+
+/* the rider, drawn with the board at y=0 and the hips at y=-13. The legs are solved
+   each frame from how compressed the rider is; the upper body rides on the hips */
+const rider=mode=>`
+  <rect class="rboard" x="-19" y="0" width="38" height="3.8" rx="1.9"/>
+  <rect class="rbase" x="-16" y="2.5" width="32" height="1.3" rx=".6"/>
+  <path class="rpant" id="lb-${mode}" d=""/>
+  <path class="rpant" id="lf-${mode}" d=""/>
+  <rect class="rbind" x="-12" y="-1.6" width="7" height="2.2" rx="1"/>
+  <rect class="rbind" x="5.5" y="-1.6" width="7" height="2.2" rx="1"/>
+  <g id="up-${mode}">
+    <path class="rarm" d="M1 -24 L-5 -18.5 L-9.5 -13"/>
+    <circle class="rmitt" cx="-10" cy="-12.4" r="2.5"/>
+    <path class="rjkt" d="M-7 -14.5 Q-11.5 -24 -3 -27.5 L6 -27.5 Q13.5 -24 9 -14.5 Z"/>
+    <path class="rjkt2" d="M3 -27.5 L6 -27.5 Q13.5 -24 9 -14.5 L4.5 -14.5 Q8 -21 3 -27.5 Z"/>
+    <path class="rarm" d="M6 -24 L12.5 -18 L17.5 -14"/>
+    <circle class="rmitt" cx="18" cy="-13.6" r="2.5"/>
+    <circle class="rhead" cx="4" cy="-31" r="5"/>
+    <rect class="rgog" x="4.4" y="-33.2" width="6.2" height="3.4" rx="1.6"/>
+    <path class="rbean" d="M-1.2 -32.6 A5.4 5.4 0 0 1 9.2 -32.6 Z"/>
+    <circle class="rpom" cx="4" cy="-38.6" r="2.2"/>
+  </g>`;
+/* two-bone leg from foot to hip, knee pushed forward toward the nose */
+const SHIN=8;
+function leg(F,H){
+  const mx=(F[0]+H[0])/2,my=(F[1]+H[1])/2,dx=H[0]-F[0],dy=H[1]-F[1],d=Math.hypot(dx,dy);
+  const k=Math.sqrt(Math.max(0,SHIN*SHIN-d*d/4));
+  let px=-dy/d,py=dx/d;if(px<0){px=-px;py=-py;}
+  return `M${F[0]} ${F[1]} L${(mx+px*k).toFixed(2)} ${(my+py*k).toFixed(2)} L${H[0]} ${H[1].toFixed(2)}`;
+}
+const RIG='scale(1.22) translate(-2,15)';  /* lifts the centre of mass to the origin */
+
+/* mode 'full' fills the opening screen, 'inline' is the panel on the home page */
+const VIEW={
+  full:['-40 -210 460 530','xMidYMid meet'],
+  inline:['-30 -20 480 340','xMidYMax slice']
+};
+function sceneSVG(mode){
+  if(mode==='bg')return `<svg viewBox="0 86 400 210" preserveAspectRatio="xMidYMax slice"
+     aria-hidden="true"><rect class="base" x="-200" y="250" width="900" height="300"/>
+    ${SCENERY}</svg>`;
+  const v=VIEW[mode];
+  return `<svg viewBox="${v[0]}" preserveAspectRatio="${v[1]}" role="img"
+     aria-label="Snowboarder riding up a kicker, backflipping, and landing on the downslope">
+    <defs>
+      <linearGradient id="sky-${mode}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" style="stop-color:var(--sky0)"/><stop offset="1" style="stop-color:var(--sky1)"/></linearGradient>
+      <radialGradient id="sun-${mode}"><stop offset="0" style="stop-color:var(--sun);stop-opacity:.9"/>
+        <stop offset=".35" style="stop-color:var(--sun);stop-opacity:.35"/>
+        <stop offset="1" style="stop-color:var(--sun);stop-opacity:0"/></radialGradient>
+      <g id="rs-${mode}">${rider(mode)}</g>
+    </defs>
+    <rect fill="url(#sky-${mode})" x="-200" y="-500" width="900" height="760"/>
+    <circle fill="url(#sun-${mode})" cx="352" cy="40" r="90"/>
+    <circle cx="352" cy="40" r="16" style="fill:var(--sun)"/>
+    <g id="cam-${mode}">
+      ${SCENERY}${TERRAIN}
+      <ellipse id="sh-${mode}" class="shadow" cx="0" cy="0" rx="0" ry="3"/>
+      <g id="fxb-${mode}"></g>
+      ${[0,1,2].map(i=>`<g id="gh-${mode}-${i}" opacity="0"><g transform="${RIG}"><use href="#rs-${mode}"/></g></g>`).join('')}
+      <g id="rider-${mode}"><g transform="${RIG}"><use href="#rs-${mode}"/></g></g>
+      <g id="fxf-${mode}"></g>
+    </g>
+  </svg>`;
+}
+function snowLayer(n){
+  let o='<div class="snowL" aria-hidden="true">';
+  for(let i=0;i<n;i++){
+    const r=(1+Math.random()*2.3).toFixed(1);
+    o+=`<i style="left:${(Math.random()*100).toFixed(1)}%;width:${r*2}px;height:${r*2}px;`
+      +`opacity:${(.3+Math.random()*.55).toFixed(2)};`
+      +`animation-duration:${(7+Math.random()*11).toFixed(1)}s,${(2.4+Math.random()*2.6).toFixed(1)}s;`
+      +`animation-delay:-${(Math.random()*18).toFixed(1)}s,-${(Math.random()*4).toFixed(1)}s"></i>`;
+  }
+  return o+'</div>';
+}
+
+const T_ALL=T_RAMP+T_AIR+T_OUT;
+function runFrame(ms){
+  let x,y,ang;
+  if(ms<T_RAMP){                                  /* in-run, easing off into the lip */
+    const t=Math.max(0,ms)/1000, T=T_RAMP/1000;
+    const q=posAt(V_IN*t+(V_LIP-V_IN)*t*t/(2*T));
+    x=q.x;y=q.y;ang=q.a;
+  }else if(ms<T_RAMP+T_AIR){                      /* flight: Bezier parameter = time */
+    const u=(ms-T_RAMP)/T_AIR, p=qAt(AIRC,u);
+    x=p[0];y=p[1];
+    const f=Math.max(0,Math.min(1,(u-.04)/.78));  /* set at the lip, spotted before landing */
+    ang=TAKEOFF_A-ROT*(.72*f+.28*f*f*(3-2*f));
+  }else{                                          /* run-out, bleeding off the landing speed */
+    const t=(ms-T_RAMP-T_AIR)/1000, n=Math.hypot(1,SLOPE_D), d=V_LAND*t*(1-1.667*t);
+    x=AIRC[2][0]+d/n;y=AIRC[2][1]+d*SLOPE_D/n;ang=SLOPE_A;
+  }
+  return [x,y,ang];
+}
+/* knee compression, 0 = legs long, 1 = deep crouch: ride in soft, load hard on the
+   transition, pop at the lip, ease off slightly in the air, reach for the landing,
+   then soak it up */
+const COMP=[[0,.4],[T_RAMP*.72,1],[T_RAMP,.12],[T_RAMP+T_AIR*.2,.5],[T_RAMP+T_AIR*.6,.58],
+  [T_RAMP+T_AIR*.9,.3],[T_RAMP+T_AIR,.35],[T_RAMP+T_AIR+120,1],[T_ALL,.5]];
+function compAt(ms){
+  if(ms<=COMP[0][0])return COMP[0][1];
+  for(let i=1;i<COMP.length;i++){
+    const a=COMP[i-1],b=COMP[i];
+    if(ms<=b[0]){const u=(ms-a[0])/(b[0]-a[0]);return a[1]+(b[1]-a[1])*u*u*(3-2*u);}
+  }
+  return COMP[COMP.length-1][1];
+}
+/* a point given in the rider's own frame, out in the scene */
+function at(f,lx,ly){const a=f[2]*Math.PI/180,c=Math.cos(a),s=Math.sin(a);
+  return [f[0]+c*lx-s*ly, f[1]+s*lx+c*ly];}
+
+/* ---------- particles: fireworks behind the rider, snow spray in front ---------- */
+const FXC=['var(--kit)','var(--pb)','var(--lens)','var(--pg)','var(--lens)'];
+let FX=[],fxMode=null;
+function emit(layer,x,y,vx,vy,o){
+  const L=document.getElementById(layer+'-'+fxMode);
+  if(!L)return;
+  const el=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  el.setAttribute('r',o.r);
+  el.style.fill=o.c;
+  L.appendChild(el);
+  FX.push({el:el,x:x,y:y,vx:vx,vy:vy,g:o.g,drag:o.drag||0,t:0,life:o.life,r:o.r,grow:o.grow||0});
+}
+function burst(x,y,n,sp){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2, v=sp*(.35+Math.random()*.65);
+    emit('fxb',x,y,Math.cos(a)*v,Math.sin(a)*v,{r:(1.3+Math.random()*1.7).toFixed(1),
+      c:FXC[(Math.random()*FXC.length)|0],g:150,drag:.6,life:700+Math.random()*600});
+  }
+}
+/* snow kicked off the board: dir in degrees, spread either side, speed range */
+function spray(x,y,n,dir,spread,v0,v1){
+  for(let i=0;i<n;i++){
+    const a=(dir+(Math.random()*2-1)*spread)*Math.PI/180, v=v0+Math.random()*(v1-v0);
+    emit('fxf',x,y,Math.cos(a)*v,Math.sin(a)*v,{r:(1+Math.random()*2.2).toFixed(1),
+      c:'var(--spray)',g:340,drag:2.2,life:380+Math.random()*420,grow:2.5});
+  }
+}
+function stepFX(dt){
+  const s=dt/1000;
+  for(let i=FX.length-1;i>=0;i--){
+    const q=FX[i];q.t+=dt;
+    if(q.t>=q.life){q.el.remove();FX.splice(i,1);continue;}
+    const k=Math.exp(-q.drag*s);
+    q.vx*=k;q.vy=q.vy*k+q.g*s;q.x+=q.vx*s;q.y+=q.vy*s;
+    const life=q.t/q.life;
+    q.el.setAttribute('cx',q.x.toFixed(1));
+    q.el.setAttribute('cy',q.y.toFixed(1));
+    if(q.grow)q.el.setAttribute('r',(q.r*(1+q.grow*life)).toFixed(1));
+    q.el.setAttribute('opacity',Math.pow(1-life,.7).toFixed(2));
+  }
+}
+/* all four well above the flight path, so nothing bursts over the rider */
+const BURSTS=[
+  {at:T_RAMP+T_AIR*.14, n:22, sp:96,  p:[62,-26]},
+  {at:T_RAMP+T_AIR*.36, n:28, sp:118, p:[236,-76]},
+  {at:T_RAMP+T_AIR*.60, n:22, sp:102, p:[124,-54]},
+  {at:T_RAMP+T_AIR*.84, n:24, sp:104, p:[372,-30]}
+];
+const GHOST=[[60,.24],[120,.14],[180,.07]];     /* lag ms, opacity */
+
+const REDUCED=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=id=>document.getElementById(id);
+function place(mode,ms){
+  const g=$('rider-'+mode);
+  if(!g)return false;
+  const f=runFrame(ms), c=compAt(ms), hh=15.4-6.4*c;
+  g.setAttribute('transform',`translate(${f[0].toFixed(1)},${f[1].toFixed(1)}) rotate(${f[2].toFixed(1)})`);
+  $('lb-'+mode).setAttribute('d',leg([-8,-1.2],[-3,-hh]));
+  $('lf-'+mode).setAttribute('d',leg([9,-1.2],[3,-hh]));
+  $('up-'+mode).setAttribute('transform',`translate(0,${(13-hh).toFixed(2)}) rotate(${(c*9).toFixed(1)} 0 -13)`);
+  /* trail of earlier selves, only while airborne */
+  GHOST.forEach((q,i)=>{
+    const el=$('gh-'+mode+'-'+i), m=ms-q[0];
+    if(m>T_RAMP+40&&ms<T_RAMP+T_AIR){
+      const h=runFrame(m);
+      el.setAttribute('transform',`translate(${h[0].toFixed(1)},${h[1].toFixed(1)}) rotate(${h[2].toFixed(1)})`);
+      el.setAttribute('opacity',q[1]);
+    }else el.setAttribute('opacity',0);
+  });
+  /* shadow on the landing, shrinking with height */
+  const sh=$('sh-'+mode), b=at(f,-2.4,22.7);
+  if(b[0]>KNUCKLE[0]+4){
+    const gy=KNUCKLE[1]+(b[0]-KNUCKLE[0])*SLOPE_D, h=Math.max(0,Math.min(240,gy-b[1]));
+    sh.setAttribute('cx',b[0].toFixed(1));sh.setAttribute('cy',gy.toFixed(1));
+    sh.setAttribute('rx',(24*(1-h/320)).toFixed(1));
+    sh.setAttribute('opacity',(.24*(1-h/260)).toFixed(2));
+    sh.setAttribute('transform',`rotate(${SLOPE_A.toFixed(1)} ${b[0].toFixed(1)} ${gy.toFixed(1)})`);
+  }else sh.setAttribute('opacity',0);
+  /* the landing thumps the camera */
+  const t=ms-T_RAMP-T_AIR, cam=$('cam-'+mode);
+  cam.setAttribute('transform',t>0&&t<260?`translate(0,${(2.6*(1-t/260)*Math.sin(t/16)).toFixed(2)})`:'');
+  return true;
+}
+/* the rider at the end of the run-out, for a scene that is not running */
+const restScene=mode=>place(mode,T_ALL);
+
+let runSeq=0;
+function runScene(mode,done){
+  if(!place(mode,0)||REDUCED()){restScene(mode);if(done)setTimeout(done,400);return;}
+  const mine=++runSeq, t0=performance.now();
+  let fired=0, prev=t0, took=false, landed=false;
+  FX.forEach(q=>q.el.remove());FX=[];fxMode=mode;
+  (function step(ts){
+    if(runSeq!==mine)return;                      /* a newer run owns the scene */
+    const ms=Math.min(T_ALL,ts-t0), dt=Math.min(48,ts-prev);prev=ts;
+    if(!place(mode,ms))return;                    /* scene was removed */
+    const f=runFrame(ms);
+    if(ms<T_RAMP&&ms>80){                          /* tail drags spray up the in-run */
+      const p=at(f,-24,22);spray(p[0],p[1],1,f[2]-160,25,30,70);}
+    if(!took&&ms>=T_RAMP){took=true;
+      const p=at(f,8,22);spray(p[0],p[1],16,TAKEOFF_A+8,30,40,120);}
+    if(!landed&&ms>=T_RAMP+T_AIR){landed=true;
+      const p=at(f,0,22);spray(p[0],p[1],34,-80,65,60,190);}
+    if(landed&&ms<T_ALL){                          /* edge digs in through the run-out */
+      const p=at(f,-22,22),k=1-(ms-T_RAMP-T_AIR)/T_OUT;
+      if(Math.random()<k*1.6)spray(p[0],p[1],2,-150,20,50*k+20,130*k+30);}
+    BURSTS.forEach((b,i)=>{
+      if(ms>=b.at&&!(fired&(1<<i))){fired|=1<<i;burst(b.p[0],b.p[1],b.n,b.sp);}});
+    stepFX(dt);
+    if(ms<T_ALL||FX.length)requestAnimationFrame(step);
+    else if(done)done();
+  })(t0);
+}
+
+/* the opening run: full screen, the name lands with the rider, then it clears */
+function playIntro(){
+  const o=document.createElement('div');
+  o.className='intro';
+  const letters=[...'Let’s Send It'].map((c,i)=>c===' '?' ':
+    `<span style="--i:${i}"${i>=6&&i<=9?' class="amp"':''}>${c}</span>`).join('');
+  o.innerHTML=`<div class="stage">${sceneSVG('full')}</div>${snowLayer(46)}
+    <div class="ititle"><span class="eyebrow">Off-snow training</span><div class="iword">${letters}</div></div>
+    <button class="skip" data-skip>Skip</button>`;
+  document.body.appendChild(o);
+  let gone=false;
+  const clear=()=>{if(gone)return;gone=true;
+    o.classList.add('out');setTimeout(()=>o.remove(),650);};
+  o.addEventListener('click',clear);
+  setTimeout(()=>o.querySelector('.ititle').classList.add('on'),REDUCED()?0:T_RAMP+T_AIR-150);
+  runScene('full',()=>setTimeout(clear,900));
+  setTimeout(clear,T_ALL+3200);                   /* never strand the page behind it */
+}
+
+function liftPanel(){
+  const r=liftRows();
+  if(!r.length)return `<div class="panel"><span class="eyebrow">Key lifts</span>
+    <p class="hint">Enter the weight you used on each exercise and your numbers will track here.</p></div>`;
+  return `<div class="panel"><span class="eyebrow">Key lifts</span>
+    <div class="lifts">${r.map(x=>`<div class="lift">
+      <span class="ln">${x.n}</span>
+      <span class="lv tnum">${x.v}<small>${x.u}</small></span>
+      <span class="ld ${x.d>0?'up':x.d<0?'dn':''} tnum">${x.d>0?'+'+(+x.d.toFixed(1)):x.d<0?(+x.d.toFixed(1)):'—'}</span>
+    </div>`).join('')}</div></div>`;
+}
+function histPanel(){
+  const ks=weekKeys(8), f=new Intl.DateTimeFormat(undefined,{day:'numeric',month:'short'});
+  const st=streak();
+  const any=ks.some(k=>k===state.week?Object.keys(state.done).length:(state.hist[k]||[]).length);
+  if(!any)return '';
+  return `<div class="panel"><span class="eyebrow">Weeks${st>1?` · ${st} in a row`:''}</span>
+    <div class="hist">${ks.map(k=>{
+      const set=k===state.week?Object.keys(state.done):(state.hist[k]||[]);
+      return `<div class="hrow"><span class="hdate tnum">${f.format(new Date(k+'T00:00:00'))}</span>
+        <span class="hdots">${DAYS.map(d=>
+          `<i class="hdot ${d.piste}${set.indexOf(d.id)<0?' off':''}"></i>`).join('')}</span>
+        ${set.length>=4?'<span class="hfull">full</span>':''}</div>`;}).join('')}</div></div>`;
+}
+
+let justPunched=null;
+const place_=k=>k.split(' - ')[0];
+function homeView(){
+  const n=doneCount(), st=streak();
+  const sub=n>=4?`<b>Full week.</b>${st>1?` ${st} in a row.`:''}`
+    :`${4-n} to go this week${st>0?` · ${st} full week${st>1?'s':''} running`:''}`;
+  let i=0;
+  app.innerHTML=`<div class="stag">
+  <header class="mast" style="--i:${i++}">
+    <div><span class="eyebrow">Off-snow training</span>
+      <h1 class="word">Let’s <span class="amp">Send</span> It</h1></div>
+  </header>
+  <section class="ticket" style="--i:${i++}" aria-label="This week">
+    <div class="tk-main">
+      <span class="eyebrow">Week pass · ${weekLabel()}</span>
+      <div class="tk-n tnum"><b>${n}</b><span>of 4 sessions</span></div>
+      <div class="tk-sub">${sub}</div>
+    </div>
+    <div class="tk-stub">${DAYS.map(d=>{const on=!!state.done[d.id];
+      return `<span class="punch ${d.piste}${on?' on':''}${on&&d.id===justPunched?' pop':''}" title="${d.grade} · ${d.name.replace('&amp;','&')}">
+        <i></i>${on?'<svg viewBox="0 0 16 16"><path d="M3 8.5 L6.5 12 L13 4.5"/></svg>':''}</span>`;}).join('')}</div>
+  </section>
+  <div class="days" style="--i:${i++}">${DAYS.map(d=>{
+    const done=!!state.done[d.id];
+    return `<button class="day${done?' done':''}" data-go="${d.id}">
+      ${sym(d.piste)}
+      <span><span class="nm">${d.name}</span>
+        <span class="mt">${done?'Done this week':`${place_(d.kind)} · ${d.ex.length} exercises · ${d.mins} min`}</span></span>
+      ${done?`<span class="tick">${ICON.tick}</span>`:`<span class="chev">${ICON.chev}</span>`}
+    </button>`;}).join('')}
+  </div>
+  <div style="--i:${i++}">${liftPanel()}</div>
+  <div style="--i:${i++}">${histPanel()}</div>
+  <div class="panel notes" style="--i:${i++}">
+    <span class="eyebrow">Progression</span>
+    <ol>
+      <li><b>Dumbbells:</b> add 2 kg when every set hits the top of the range cleanly. At 2 × 12 kg, add reps, then a 3-second lowering phase.</li>
+      <li><b>Leg curl:</b> no grip cap, so push it. 30 kg now, 45 kg by spring.</li>
+      <li><b>Jumps:</b> add box height, never reps or sets.</li>
+      <li><b>Roller board:</b> hold longer, then eyes closed, then head turns.</li>
+      <li><b>Eating:</b> 100–110 g protein daily and a small surplus. If the numbers stall two weeks running, that is usually the cause.</li>
+    </ol>
+  </div></div>`;
+  justPunched=null;
+}
+
+function lastSeen(k){
+  const h=state.log[k];if(!h)return '';
+  const ks=Object.keys(h).filter(w=>w!==state.week).sort();
+  if(!ks.length)return '';
+  return `<span class="lprev tnum">last ${h[ks[ks.length-1]]}</span>`;
+}
+function dayView(id,fresh){
+  const d=DAY_BY_ID[id];if(!d)return go('');
+  const done=!!state.done[id];
+  app.innerHTML=`<div class="stag">
+  <button class="back" data-go="">${ICON.back}All sessions</button>
+  <div class="sign" style="--i:1">${sym(d.piste)}
+    <div><span class="eyebrow">${d.grade} run · ${d.kind.replace(' - ',' · ')}</span><h1>${d.name}</h1></div></div>
+  <div class="meta" style="--i:2"><span class="chip">${d.ex.length} exercises</span><span class="chip">${d.mins} min</span></div>
+  <p class="dnote" style="--i:2">${d.note}</p>
+  ${d.ex.map((e,i)=>`<div class="ex" style="--i:${i+3}">
+    <div class="artw">${ART[e.a]?ART[e.a]():''}<span class="num tnum">${i+1}</span></div>
+    <div class="exb">
+      <div class="exn">${e.n}</div>
+      <div class="stats"><span class="chip">${e.s}</span><span class="chip w">${e.w}</span></div>
+      <div class="cue">${e.c}</div>
+      ${e.k?`<label class="log" for="log-${e.k}">
+        <span class="llab">Used</span>
+        <input class="lin tnum" id="log-${e.k}" data-log="${e.k}" type="number" inputmode="decimal"
+          step="0.5" min="0" placeholder="—" value="${state.log[e.k]&&state.log[e.k][state.week]!=null?state.log[e.k][state.week]:''}">
+        <span class="lu">${e.u}</span>
+        ${lastSeen(e.k)}</label>`:''}
+    </div></div>`).join('')}
+  <button class="finish${done?' on':''}${fresh?' fresh':''}" data-finish="${id}" style="--i:${d.ex.length+3}">
+    ${done?`${ICON.tick}Session done · tap to undo`:'Complete session'}</button></div>`;
+  if(fresh){app.querySelector('.stag').classList.remove('stag');}
+  else window.scrollTo(0,0);
+}
+
+/* confetti in piste colours from the finish button */
+function celebrate(el){
+  if(!el||REDUCED())return;
+  const r=el.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+  const C=['var(--pg)','var(--pb)','var(--pr)','var(--accent)','var(--lens)'];
+  for(let i=0;i<34;i++){
+    const s=document.createElement('i'), a=-Math.PI/2+(Math.random()*2-1)*1.2, v=90+Math.random()*170;
+    s.className='cf';
+    s.style.cssText=`left:${cx+(Math.random()*2-1)*r.width*.3}px;top:${cy}px;background:${C[i%C.length]};`
+      +`--dx:${(Math.cos(a)*v).toFixed(0)}px;--dy:${(Math.sin(a)*v).toFixed(0)}px;--r:${(Math.random()*720-360).toFixed(0)}deg;`
+      +`animation-delay:${(Math.random()*60).toFixed(0)}ms`;
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),1300);
+  }
+}
+
+/* ============ routing + events ============ */
+const ROUTES=['gym1','gym2','homea','homeb'];
+function render(){
+  const h=(location.hash||'').replace(/^#/,'');
+  if(ROUTES.includes(h))dayView(h);else homeView();
+}
+function go(h){
+  if((location.hash||'').replace(/^#/,'')===h){render();return;}
+  location.hash=h;
+}
+addEventListener('hashchange',render);
+
+document.addEventListener('change',ev=>{
+  const i=ev.target.closest('[data-log]');
+  if(!i)return;
+  const k=i.getAttribute('data-log'), v=parseFloat(i.value);
+  const log=Object.assign({},state.log), h=Object.assign({},log[k]);
+  if(i.value===''||!isFinite(v))delete h[state.week];
+  else h[state.week]=v;
+  if(Object.keys(h).length)log[k]=trim(h);else delete log[k];
+  state.log=log;
+  save();
+});
+
+document.addEventListener('click',ev=>{
+  const g=ev.target.closest('[data-go]');
+  if(g){go(g.getAttribute('data-go'));return;}
+  const f=ev.target.closest('[data-finish]');
+  if(f){
+    const id=f.getAttribute('data-finish');
+    const d=Object.assign({},state.done);
+    if(d[id])delete d[id];else{d[id]=true;justPunched=id;}
+    state.done=d;
+    save();dayView(id,true);
+    if(d[id])celebrate(app.querySelector('.finish'));
+    return;
+  }
+});
+
+/* ============ boot ============ */
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+(function backdrop(){
+  const b=document.createElement('div');
+  b.className='bg';b.setAttribute('aria-hidden','true');
+  b.innerHTML=`<div class="bgscene">${sceneSVG('bg')}</div>${snowLayer(30)}`;
+  document.body.insertBefore(b,document.body.firstChild);
+})();
+state=readLocal();
+render();
+if(!(location.hash||'').replace(/^#/,''))playIntro();
+
+(async()=>{
+  let d=null;
+  try{d=await window.claude?.use('db');}catch(e){}
+  if(!d)return;
+  db=d;
+  try{ref=db.doc('progress/current');}catch(e){return;}
+  ref.onSnapshot(snap=>{
+    const remote=snap.exists?normalise(snap.data()):null;
+    if(!hydrated){
+      hydrated=true;
+      const le=isEmpty(state);
+      if(remote&&!(isEmpty(remote)&&!le)){
+        state=remote;writeLocal();
+      }else if(!le){
+        ref.set({week:state.week,done:state.done,log:state.log,hist:state.hist}).catch(()=>{});
+      }
+    }else if(remote&&!snap.metadata.hasPendingWrites){
+      if(JSON.stringify(remote)===JSON.stringify(state))return;
+      state=remote;writeLocal();
+    }else return;
+    render();
+  },()=>{});
+})();
+</script>
+
+</body>
+</html>
