@@ -1,6 +1,6 @@
 /* Offline support. Bump VERSION whenever you upload a changed index.html,
    so phones drop the old copy and fetch the new one. */
-const VERSION = 'send-it-v1';
+const VERSION = 'send-it-v4';
 const CORE = ['./', 'index.html', 'manifest.webmanifest',
   'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 

@@ -501,13 +501,13 @@ bound:()=>S(floor()+
   `<line class="lmb" x1="75" y1="91" x2="88" y2="91"/>`+
   qarw(14,86,36,58,62,76)),
 
-rollerhold:()=>S(floor()+
-  `<circle class="prop" cx="60" cy="85" r="7"/>`+
-  mv('sway',`<rect class="prop fillp" x="18" y="71" width="84" height="7" rx="2"/>`+
-  body({head:[60,17],sh:[60,29],hip:[60,45],
-    far:[[[47,57],[45,70]]],farArm:[[[47,37],[38,31]]],
-    near:[[[73,57],[75,70]]],arm:[[[73,37],[82,31]]]})+
-  `<line class="lmb" x1="39" y1="71" x2="51" y2="71"/><line class="lmb" x1="69" y1="71" x2="81" y2="71"/>`,'60px 78px')),
+/* one leg on a soft pad, free leg tucked behind, catching a ball thrown slightly wide */
+slpass:()=>S(floor()+slab(36,85,42,7)+
+  mv('wob',body({head:[61,17],sh:[59,29],hip:[55,52],
+    far:[[[49,67],[38,72]]],farArm:[[[67,38],[76,35]]],
+    near:[[[63,67],[58,84],[67,85]]],arm:[[[68,35],[77,31]]]}),'60px 85px')+
+  `<circle class="prop fillp" cx="82" cy="31" r="4.5"/>`+
+  qarw(114,58,108,20,90,27)),
 
 rollersquat:()=>S(floor()+
   `<rect class="prop fillp" x="18" y="71" width="84" height="7" rx="2"/>`+
@@ -574,12 +574,14 @@ bandwalk:()=>S(floor()+
   `<line class="lmb" x1="29" y1="91" x2="42" y2="91"/><line class="lmb" x1="74" y1="91" x2="87" y2="91"/>`)+
   arw(96,80,110,80)),
 
-wallsit:()=>S(floor()+wallp(16)+
-  body({head:[31,28],sh:[31,40],hip:[33,62],
-    far:[[[62,64],[58,90],[66,91]]],farArm:[[[42,52],[54,50]]],
-    near:[[[72,62],[72,90],[80,91]]],arm:[[[44,51],[56,49]]]})+
-  `<path class="prop" d="M66 62 L72 62 L72 56" opacity=".8"/>`+
-  `<text class="lbl" x="74" y="52">90°</text>`)
+/* free-standing half squat in board stance: feet at board width, no wall, arms loose */
+stancehold:()=>S(floor()+
+  `<rect class="prop dash" x="22" y="87" width="76" height="5" rx="2.5"/>`+
+  mv('wob',body({head:[60,34],sh:[60,46],hip:[60,64],
+    far:[[[41,71],[45,86]]],farArm:[[[51,55],[47,66]]],
+    near:[[[79,71],[75,86]]],arm:[[[69,55],[73,66]]]})+
+  `<line class="lmb" x1="39" y1="86" x2="51" y2="86"/><line class="lmb" x1="69" y1="86" x2="81" y2="86"/>`,'60px 86px')+
+  darw(34,97,76,97)+`<text class="lbl" x="80" y="99">stance</text>`)
 };
 
 /* ============ programme ============ */
@@ -623,10 +625,10 @@ const DAYS=[
     c:'Step off, land, absorb into a quarter squat, freeze 3 seconds. Silent landings only.'},
    {n:'Lateral bound',s:'4 × 4 per side',w:'Bodyweight',a:'bound',
     c:'Push off one leg, land on the other, hold 2 full seconds before the next rep.'},
-   {n:'Roller board — centred hold',s:'3 × 60 s',w:'Bodyweight',a:'rollerhold',
-    c:'Feet at board-stance width, roller under the middle of the deck. Progress with eyes closed.'},
-   {n:'Roller board — quarter squat',s:'3 × 10',w:'Bodyweight',a:'rollersquat',
-    c:'Stay centred as you drop and stand. Slow, no rocking.'},
+   {n:'Single-leg unstable passes',s:'3 × 30 s per side',w:'Ball + pad or folded mat',a:'slpass',
+    c:'One foot on the pad, soft quarter squat. Catch and throw with a partner or a wall; aim slightly wide so each catch tips you. Knee stays quiet over the foot.'},
+   {n:'Squat hold, snowboard stance',s:'3 × 45–60 s',w:'Bodyweight',a:'stancehold',
+    c:'Sideways, feet at board-stance width, sit to your landing crouch. Weight centred, chest up, arms loose. Swap lead foot each set; eyes closed to progress.'},
    {n:'Side plank, top leg lifted',s:'3 × 30 s per side',w:'Bodyweight',a:'sideplank',
     c:'Forearm down, body straight, raise the top leg and hold. Glute med and adductor together.'}]},
 
@@ -639,14 +641,14 @@ const DAYS=[
     c:'Roll to one side and stop just before the deck touches down. Hold there. This is the carve.'},
    {n:'Roller board — rotation hold',s:'3 × 30 s',w:'Bodyweight',a:'rotation',
     c:'Stay centred, twist your shoulders, keep the board still underneath you.'},
+   {n:'Roller board — quarter squat',s:'3 × 10',w:'Bodyweight',a:'rollersquat',
+    c:'Stay centred as you drop and stand. Slow, no rocking.'},
    {n:'Band eversion',s:'3 × 20 per side',w:'Light band',a:'eversion',
     c:'Anchor low, leg straight, turn the sole of your foot outward. 2 seconds back. Peroneals.'},
    {n:'Band inversion + dorsiflexion',s:'3 × 15 per side each',w:'Light band',a:'inversion',
     c:'Inversion: the sole turns inward. Dorsiflexion: pull your foot toward your shin.'},
    {n:'Lateral band walk',s:'3 × 15 each way',w:'Medium loop band',a:'bandwalk',
-    c:'Stay low in a quarter squat. Feet never come together.'},
-   {n:'Wall sit, snowboard stance',s:'3 × 60 s',w:'Bodyweight',a:'wallsit',
-    c:'Feet staggered like your board stance, thighs parallel. Swap lead foot each set.'}]}
+    c:'Stay low in a quarter squat. Feet never come together.'}]}
 ];
 const DAY_BY_ID=Object.fromEntries(DAYS.map(d=>[d.id,d]));
 
